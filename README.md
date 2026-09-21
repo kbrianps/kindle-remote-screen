@@ -1,6 +1,6 @@
 # kindle-remote-screen
 
-![The page mirroring a book on the Kindle](docs/screenshot.png)
+<p align="center"><img src="docs/screenshot.png" width="420" alt="The page mirroring a book on the Kindle"></p>
 
 See and control a jailbroken Kindle from your computer's browser: a live
 mirror of the e-ink screen plus real touch input (tap, long press, swipe),

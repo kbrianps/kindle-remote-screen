@@ -354,7 +354,7 @@ button:hover{background:#2c2c2c}
 </style></head><body>
 <header><span id="dot"></span><span id="conn">Connecting…</span><span>·</span><span>CONNLABEL</span><span>·</span><span id="fps"></span></header>
 <div id="dev"><div id="wrap">
-  <img id="v" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACw="><div id="ring"></div>
+  <img id="v" alt="" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="><div id="ring"></div>
 </div></div>
 <div class="row">
   <button id="power">Wake/Sleep</button>
@@ -443,7 +443,7 @@ class Handler(BaseHTTPRequestHandler):
                                   "text/html; charset=utf-8")
             if u.path == "/shot":
                 _awake["view"] = time.time()
-                for _ in range(30):                           # first visit: wait for the stream to come up
+                for _ in range(60):                           # first visit: wait for the stream to come up
                     if fresh():
                         break
                     time.sleep(0.1)
