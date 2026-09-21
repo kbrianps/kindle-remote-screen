@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: GPL-3.0-or-later
 # Starts the Kindle-side piece that does not survive a reboot: the ktouch
 # virtual touchscreen. Run it once after each Kindle boot, before opening the
 # page. Safe to repeat: it only starts what is not running. It writes only to

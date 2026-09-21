@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
 """
 kindle-remote-screen: see and control a jailbroken Kindle from the browser.
 
@@ -33,6 +34,7 @@ except ImportError:
 ap = argparse.ArgumentParser(description="Kindle remote screen server")
 ap.add_argument("--host", default="kindle", help="SSH host of the Kindle, as in ~/.ssh/config (default: kindle)")
 ap.add_argument("--port", type=int, default=8777, help="local HTTP port (default: 8777)")
+ap.add_argument("--label", help="connection label shown on the page (default: USB or Wi-Fi, guessed from the host address)")
 ap.add_argument("--touch-cmd", default="/tmp/ktouch.cmd", help="command file read by the ktouch daemon")
 args = ap.parse_args()
 
@@ -42,6 +44,19 @@ CMD_FILE = args.touch_cmd
 W, H = 1072, 1448          # Kindle 11th gen (KT5) panel
 OW, OH = 536, 724
 STREAM_CMD = "/mnt/us/fbstream 30"
+
+
+def guess_label(host):
+    """USB networking on the Kindle uses 192.168.15.x (UsbNetLite/USBNetwork default)."""
+    try:
+        out = subprocess.run(["ssh", "-G", host], capture_output=True, text=True, timeout=5).stdout
+        addr = next((l.split()[1] for l in out.splitlines() if l.startswith("hostname ")), host)
+    except Exception:
+        addr = host
+    return "USB" if addr.startswith("192.168.15.") else "Wi-Fi"
+
+
+LABEL = args.label or guess_label(SSH_HOST)
 
 _ids = itertools.count(1)
 _results = {}
@@ -337,12 +352,12 @@ header{display:flex;align-items:center;gap:10px;color:var(--dim);font-size:13px}
 button{background:#222;color:var(--fg);border:1px solid #3a3a3a;border-radius:8px;padding:9px 16px;font:inherit;cursor:pointer}
 button:hover{background:#2c2c2c}
 </style></head><body>
-<header><span id="dot"></span><span id="conn">Connecting…</span><span>·</span><span>HOSTNAME</span><span>·</span><span id="fps"></span></header>
+<header><span id="dot"></span><span id="conn">Connecting…</span><span>·</span><span>CONNLABEL</span><span>·</span><span id="fps"></span></header>
 <div id="dev"><div id="wrap">
   <img id="v" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACw="><div id="ring"></div>
 </div></div>
 <div class="row">
-  <button id="power">Wake / sleep</button>
+  <button id="power">Wake/Sleep</button>
   <button id="home">Home</button>
 </div>
 <script>
@@ -424,7 +439,7 @@ class Handler(BaseHTTPRequestHandler):
         u = urlparse(self.path); q = parse_qs(u.query)
         try:
             if u.path == "/":
-                return self._send(200, PAGE.replace("WIDTH", str(W)).replace("HEIGHT", str(H)).replace("HOSTNAME", SSH_HOST),
+                return self._send(200, PAGE.replace("WIDTH", str(W)).replace("HEIGHT", str(H)).replace("CONNLABEL", LABEL),
                                   "text/html; charset=utf-8")
             if u.path == "/shot":
                 _awake["view"] = time.time()

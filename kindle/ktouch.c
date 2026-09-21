@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 /*
  * ktouch: virtual touchscreen for the Kindle via /dev/input/uinput,
  * with tap, long press and swipe.

@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 /*
  * fbstream: low-latency framebuffer stream for the Kindle (11th gen, 8bpp).
  *

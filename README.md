@@ -1,5 +1,7 @@
 # kindle-remote-screen
 
+![The page mirroring a book on the Kindle](docs/screenshot.png)
+
 See and control a jailbroken Kindle from your computer's browser: a live
 mirror of the e-ink screen plus real touch input (tap, long press, swipe),
 the power button and the home button.
@@ -66,7 +68,16 @@ page, so the Kindle is not kept busy when you are not using it.
    ```
 
    `ControlMaster` is optional but makes buttons and the first tap faster.
-3. Build and copy the Kindle binaries (to `/mnt/us`, the user storage):
+3. Get the Kindle binaries into `/mnt/us` (the user storage). Either download
+   `ktouch` and `fbstream` from the
+   [Releases](https://github.com/kbrianps/kindle-remote-screen/releases) page:
+
+   ```
+   sudo apt install python3-pil python3-numpy
+   scp ktouch fbstream kindle:/mnt/us/ && ssh kindle 'chmod +x /mnt/us/ktouch /mnt/us/fbstream'
+   ```
+
+   or build them yourself:
 
    ```
    sudo apt install gcc-arm-linux-gnueabihf python3-pil python3-numpy
@@ -87,6 +98,9 @@ page, so the Kindle is not kept busy when you are not using it.
    # open http://127.0.0.1:8777
    ```
 
+The top bar shows `USB` when the host address is on the Kindle's USB network
+(192.168.15.x) and `Wi-Fi` otherwise; `--label` overrides it.
+
 The server listens only on `127.0.0.1`, so the page is reachable from your
 computer only.
 
@@ -101,7 +115,7 @@ computer only.
 | Mouse wheel | Taps the scroll arrow if one is visible; turns the page in a book |
 | Shift + wheel, arrow keys, PageUp/PageDown, Space | Turns the page (only inside a book) |
 | Home key or **Home** button | Home screen |
-| **Wake / sleep** button | Power button |
+| **Wake/Sleep** button | Power button |
 
 The mouse wheel never taps blindly: if it cannot find a scroll arrow or a
 book page, it does nothing.
@@ -139,3 +153,9 @@ kindle/ktouch.c           virtual touchscreen daemon (runs on the Kindle)
 scripts/kindle-setup.sh   per-boot setup on the Kindle
 Makefile                  cross-compile and install the Kindle binaries
 ```
+
+## License
+
+GPL-3.0-or-later. See [LICENSE](LICENSE). You may use, study, change and
+share this project; if you distribute a modified version, you must publish its
+source under the same license.
